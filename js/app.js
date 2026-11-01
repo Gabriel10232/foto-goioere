@@ -49,9 +49,17 @@
     $('ddPanel').innerHTML = '<a href="#catalogo" data-cat="">Todos os produtos <small>' + PRODUCTS.length + '</small></a>' + CATEGORIES.map(function (c) {
       return '<a href="#catalogo" data-cat="' + c.id + '">' + esc(c.name) + ' <small>' + (n[c.id] || 0) + '</small></a>';
     }).join('');
-    $('mPanel').innerHTML = '<a href="#catalogo" data-cat="">Todos os produtos <small>' + PRODUCTS.length + '</small></a>' + CATEGORIES.map(function (c) {
-      return '<a href="#catalogo" data-cat="' + c.id + '">' + esc(c.name) + ' <small>' + (n[c.id] || 0) + '</small></a>';
-    }).join('') + '<hr><a href="#destaques">Destaques</a><a href="#loja">A loja</a><a href="#contato">Contato</a><a href="https://wa.me/5544999060030" target="_blank" rel="noopener" data-event="whatsapp_click" data-where="menu-mobile">WhatsApp (44) 99906-0030</a>';
+    var chevR = '<svg class="m-chev" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var gridIco = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>';
+    $('mBody').innerHTML = '<p class="m-title">Categorias</p>' +
+      '<a class="m-row" href="#catalogo" data-cat=""><span class="m-ph m-all">' + gridIco + '</span><span class="m-name">Todos os produtos</span><small>' + PRODUCTS.length + '</small>' + chevR + '</a>' +
+      CATEGORIES.map(function (c) {
+        var p = stocked(c.id, 1)[0];
+        return '<a class="m-row" href="#catalogo" data-cat="' + c.id + '"><span class="m-ph">' + (p ? imgTag(p, '', true, true) : '') + '</span><span class="m-name">' + esc(c.name) + '</span><small>' + (n[c.id] || 0) + '</small>' + chevR + '</a>';
+      }).join('') +
+      '<p class="m-title">A loja</p>' +
+      '<a class="m-link" href="#destaques">Destaques</a><a class="m-link" href="#loja">Horário e endereço</a><a class="m-link" href="#contato">Contato</a>' +
+      '<a class="m-wa" href="https://wa.me/5544999060030" target="_blank" rel="noopener" data-event="whatsapp_click" data-where="menu-mobile">Falar no WhatsApp</a>';
     $('footCats').innerHTML = CATEGORIES.map(function (c) { return '<li><button type="button" data-cat="' + c.id + '">' + esc(c.name) + '</button></li>'; }).join('');
   }
   function renderSide() {
@@ -284,13 +292,38 @@
     if (clear) { state.query = ''; $('search').value = ''; }
     render();
   }
-  function closeMenu() { $('mPanel').hidden = true; $('burger').setAttribute('aria-expanded', 'false'); }
+  function menuOpen() { return $('mPanel').classList.contains('open'); }
+  function openMenu() {
+    $('mPanel').classList.add('open'); $('mScrim').classList.add('open'); $('mPanel').setAttribute('aria-hidden', 'false');
+    $('burger').setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; $('mClose').focus();
+  }
+  function closeMenu(refocus) {
+    if (!menuOpen()) return;
+    $('mPanel').classList.remove('open'); $('mScrim').classList.remove('open'); $('mPanel').setAttribute('aria-hidden', 'true');
+    $('burger').setAttribute('aria-expanded', 'false');
+    if (!document.querySelector('.drawer.open,.modal.open')) document.body.style.overflow = '';
+    if (refocus) $('burger').focus();
+  }
+  function scrollToEl(el, extra) {
+    var head = document.querySelector('header.site'), off = (head ? head.offsetHeight : 0) + (extra || 12);
+    var to = Math.max(0, el.getBoundingClientRect().top + window.pageYOffset - off), from = window.pageYOffset, dist = to - from;
+    if (Math.abs(dist) < 4) { window.scrollTo({ top: to, behavior: 'instant' }); return; }
+    var dur = Math.min(900, 380 + Math.abs(dist) * 0.25) * (reduceMotion ? 0.6 : 1), t0 = null;
+    function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+    function step(ts) { if (t0 === null) t0 = ts; var p = Math.min(1, (ts - t0) / dur); window.scrollTo({ top: from + dist * ease(p), behavior: 'instant' }); if (p < 1) requestAnimationFrame(step); }
+    requestAnimationFrame(step);
+  }
   function closeDropdown() { $('ddPanel').hidden = true; $('ddBtn').setAttribute('aria-expanded', 'false'); }
   function wire() {
     document.addEventListener('click', function (e) {
       var t = e.target.closest('[data-add],[data-open],[data-dec],[data-inc],[data-rm],[data-cat],[data-notify],[data-event],[data-thumb],[data-scroll],[data-slide]');
       if (!$('ddPanel').hidden && !e.target.closest('.dd')) closeDropdown();
-      if (!$('mPanel').hidden && (e.target.closest('#mPanel a') || !e.target.closest('#burger, #mPanel'))) closeMenu();
+      if (menuOpen() && (e.target.closest('#mPanel a') || !e.target.closest('#burger, #mPanel'))) closeMenu();
+      var an = e.target.closest('a[href^="#"]');
+      if (an && an.getAttribute('href').length > 1 && !an.dataset.cat) {
+        var target = document.getElementById(an.getAttribute('href').slice(1));
+        if (target) { e.preventDefault(); scrollToEl(target); history.replaceState(null, '', an.getAttribute('href')); }
+      }
       if (!t) return;
       var d = t.dataset;
       if (d.add) { addToCart(d.add); flashButton(t); }
@@ -312,13 +345,15 @@
       }
       else if (d.cat !== undefined) {
         e.preventDefault(); closeDropdown(); setFilter(d.cat, true);
-        $('catalogo').scrollIntoView();
+        scrollToEl($('catalogo'));
       }
       if (d.event === 'whatsapp_click') track('whatsapp_click', { where: d.where });
     });
-    $('burger').onclick = function () {
-      var open = $('mPanel').hidden; $('mPanel').hidden = !open; this.setAttribute('aria-expanded', String(open));
-    };
+    $('burger').onclick = function () { menuOpen() ? closeMenu(true) : openMenu(); };
+    $('mClose').onclick = function () { closeMenu(true); };
+    var mx = null;
+    $('mPanel').addEventListener('touchstart', function (e) { mx = e.touches[0].clientX; }, { passive: true });
+    $('mPanel').addEventListener('touchend', function (e) { if (mx !== null && e.changedTouches[0].clientX - mx < -60) closeMenu(true); mx = null; });
     $('ddBtn').onclick = function () {
       var open = $('ddPanel').hidden; $('ddPanel').hidden = !open; this.setAttribute('aria-expanded', String(open));
     };
@@ -338,7 +373,7 @@
     $('moreBtn').onclick = showMore;
     $('onlyStock').onchange = function (e) { state.onlyStock = e.target.checked; state.shown = PAGE; render(); };
     $('sort').onchange = function (e) { state.sort = e.target.value; state.shown = PAGE; render(); };
-    $('searchForm').addEventListener('submit', function (e) { e.preventDefault(); $('catalogo').scrollIntoView(); });
+    $('searchForm').addEventListener('submit', function (e) { e.preventDefault(); scrollToEl($('catalogo')); });
     var timer;
     $('search').addEventListener('input', function (e) {
       state.query = e.target.value.trim(); state.shown = PAGE;
@@ -352,7 +387,7 @@
     $('modal').onclick = function (e) { if (e.target.id === 'modal') closeLayer('modal'); };
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
-      if (!$('mPanel').hidden) closeMenu();
+      if (menuOpen()) closeMenu(true);
       else if (!$('ddPanel').hidden) closeDropdown();
       else if ($('modal').classList.contains('open')) closeLayer('modal');
       else if ($('drawer').classList.contains('open')) closeLayer('drawer');
