@@ -315,6 +315,12 @@
     $('ddBtn').onclick = function () {
       var open = $('ddPanel').hidden; $('ddPanel').hidden = !open; this.setAttribute('aria-expanded', String(open));
     };
+    var tx = null, banner = document.querySelector('.banner');
+    banner.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX; autoplay(false); }, { passive: true });
+    banner.addEventListener('touchend', function (e) {
+      if (tx !== null) { var dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 40) goSlide(slide + (dx < 0 ? 1 : -1)); }
+      tx = null; autoplay(true);
+    });
     $('bPrev').onclick = function () { goSlide(slide - 1); autoplay(true); };
     $('bNext').onclick = function () { goSlide(slide + 1); autoplay(true); };
     var ban = document.querySelector('.banner');
