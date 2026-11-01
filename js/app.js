@@ -218,7 +218,7 @@
   var toastTimer;
   function toast(msg) {
     var t = $('toast'); t.querySelector('span').textContent = msg; t.classList.add('show');
-    clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove('show'); }, 3200);
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove('show'); }, 7000);
   }
   function flashButton(btn) {
     if (!btn || btn.dataset.flash) return;
