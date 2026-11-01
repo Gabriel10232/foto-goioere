@@ -2,9 +2,10 @@
   'use strict';
   var PRODUCTS = window.PRODUCTS, CATEGORIES = window.CATEGORIES, STORE = window.STORE;
   var PAGE = 24;
-  var CART_KEY = 'fg_cart_v2';
-  var state = { list: [], query: '', category: null, onlyStock: false, sort: 'rel', shown: PAGE, cart: [], lastFocus: null };
+  var CART_KEY = 'fg_cart_v2', RECENT_KEY = 'fg_recent_v1';
+  var state = { list: [], query: '', category: null, onlyStock: false, sort: 'rel', shown: PAGE, cart: [], recent: [], lastFocus: null };
   var $ = function (id) { return document.getElementById(id); };
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------- analytics (espaço preparado; troque pelo GA4/Nuvemshop) ---------- */
   window.dataLayer = window.dataLayer || [];
@@ -28,36 +29,27 @@
     var src = thumb && p.id ? 'img/thumbs/' + p.id + '.webp' : img(p);
     return src ? '<img src="' + esc(src) + '" alt="' + esc(alt) + '"' + (lazy ? ' loading="lazy"' : '') + ' decoding="async" width="320" height="320" />' : '';
   }
+  function store(key, val) { try { if (val === undefined) return JSON.parse(localStorage.getItem(key) || '[]'); localStorage.setItem(key, JSON.stringify(val)); } catch (e) { return []; } }
 
-  /* ---------- cart persistence (apenas ids e quantidades) ---------- */
-  function loadCart() {
-    try {
-      var raw = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
-      state.cart = raw.filter(function (i) { return byId(i.id) && i.qty > 0; });
-    } catch (e) { state.cart = []; }
-  }
-  function saveCart() { try { localStorage.setItem(CART_KEY, JSON.stringify(state.cart)); } catch (e) {} }
+  /* ---------- carrinho: persistência ---------- */
+  function loadCart() { state.cart = store(CART_KEY).filter(function (i) { return byId(i.id) && i.qty > 0; }); }
+  function saveCart() { store(CART_KEY, state.cart); }
 
   /* ---------- categorias ---------- */
-  function counts() {
-    var c = {}; PRODUCTS.forEach(function (p) { c[p.category] = (c[p.category] || 0) + 1; }); return c;
-  }
-  function firstPhoto(catId) {
-    return PRODUCTS.filter(function (p) { return p.category === catId && p.stock === 'in' && p.images.length; })[0];
+  function counts() { var c = {}; PRODUCTS.forEach(function (p) { c[p.category] = (c[p.category] || 0) + 1; }); return c; }
+  function stocked(catId, n) {
+    return PRODUCTS.filter(function (p) { return (!catId || p.category === catId) && p.stock === 'in' && p.images.length; }).slice(0, n);
   }
   function renderCats() {
     var n = counts();
     $('catTiles').innerHTML = CATEGORIES.map(function (c) {
-      var p = firstPhoto(c.id);
-      return '<button class="tile" type="button" data-cat="' + c.id + '"><span class="t-photo">' + (p ? imgTag(p, '', true, true) : '') + '</span>' +
-        '<span class="t-name">' + esc(c.name) + '</span><span class="t-count">' + (n[c.id] || 0) + ' produtos</span></button>';
+      var p = stocked(c.id, 1)[0];
+      return '<button class="chip-cat" type="button" data-cat="' + c.id + '"><span class="c-img">' + (p ? imgTag(p, '', true, true) : '') + '</span>' + esc(c.name) + '</button>';
     }).join('');
-    $('topNav').innerHTML = '<a href="#catalogo" data-cat="">Todos</a>' + CATEGORIES.map(function (c) {
-      return '<a href="#catalogo" data-cat="' + c.id + '">' + esc(c.name) + '</a>';
-    }).join('') + '<a href="#loja">A loja</a><a href="#contato">Contato</a>';
-    // hero: três fotos reais de produtos em estoque
-    var picks = ['violoes', 'teclados', 'microfones'].map(firstPhoto).filter(Boolean);
-    $('heroPhotos').innerHTML = picks.map(function (p) { return '<figure>' + imgTag(p, '') + '</figure>'; }).join('');
+    $('ddPanel').innerHTML = '<a href="#catalogo" data-cat="">Todos os produtos <small>' + PRODUCTS.length + '</small></a>' + CATEGORIES.map(function (c) {
+      return '<a href="#catalogo" data-cat="' + c.id + '">' + esc(c.name) + ' <small>' + (n[c.id] || 0) + '</small></a>';
+    }).join('');
+    $('footCats').innerHTML = CATEGORIES.map(function (c) { return '<li><button type="button" data-cat="' + c.id + '">' + esc(c.name) + '</button></li>'; }).join('');
   }
   function renderSide() {
     var n = counts();
@@ -65,6 +57,50 @@
       CATEGORIES.map(function (c) {
         return '<li><button type="button" data-cat="' + c.id + '" aria-pressed="' + (state.category === c.id) + '">' + esc(c.name) + ' <small>' + (n[c.id] || 0) + '</small></button></li>';
       }).join('');
+  }
+
+  /* ---------- banner ---------- */
+  var slide = 0, slideTimer, slideCount = 0;
+  function renderBanner() {
+    document.querySelectorAll('[data-photos]').forEach(function (el) {
+      el.innerHTML = stocked(el.dataset.photos, 3).map(function (p) { return '<figure>' + imgTag(p, '', false, true) + '</figure>'; }).join('');
+    });
+    slideCount = document.querySelectorAll('.slide').length;
+    $('dots').innerHTML = Array.apply(null, Array(slideCount)).map(function (_, i) {
+      return '<button type="button" role="tab" aria-label="Destaque ' + (i + 1) + '" aria-selected="' + (i === 0) + '" data-slide="' + i + '"></button>';
+    }).join('');
+  }
+  function goSlide(i) {
+    slide = (i + slideCount) % slideCount;
+    $('slides').style.transform = 'translateX(-' + slide * 100 + '%)';
+    document.querySelectorAll('.slide').forEach(function (s, k) { s.setAttribute('aria-hidden', String(k !== slide)); s.inert = k !== slide; });
+    document.querySelectorAll('#dots button').forEach(function (b, k) { b.setAttribute('aria-selected', String(k === slide)); });
+  }
+  function autoplay(on) {
+    clearInterval(slideTimer);
+    if (on && !reduceMotion) slideTimer = setInterval(function () { goSlide(slide + 1); }, 6500);
+  }
+
+  /* ---------- cartões de destaque ---------- */
+  function renderQuick() {
+    var id = state.recent[0], p = id && byId(id);
+    var first = stocked('violoes', 1)[0];
+    $('recentCard').innerHTML = p
+      ? '<h3>Visto recentemente</h3><button class="q-recent" type="button" data-open="' + p.id + '"><span class="q-img">' + imgTag(p, '', true, true) + '</span><span>' + esc(p.name) + '</span></button><a href="#catalogo">Ver produtos</a>'
+      : '<h3>Comece pelos violões</h3><button class="q-recent" type="button" data-cat="violoes"><span class="q-img">' + (first ? imgTag(first, '', true, true) : '') + '</span><span>Violões, violas e ukuleles em estoque.</span></button><a href="#catalogo" data-cat="violoes">Ver violões</a>';
+  }
+
+  /* ---------- carrosséis de produtos ---------- */
+  var ROWS = ['violoes', 'teclados', 'microfones', 'guitarras', 'percussao', 'som-iluminacao'];
+  function renderRows() {
+    $('rows').innerHTML = ROWS.map(function (cid) {
+      var list = stocked(cid, 14);
+      if (list.length < 3) return '';
+      return '<section class="container row" aria-label="' + esc(catName(cid)) + '"><div class="row-head"><h2>' + esc(catName(cid)) + '</h2><button type="button" data-cat="' + cid + '">Ver todos</button></div>' +
+        '<div class="row-wrap"><button class="arrow a-prev" type="button" aria-label="Anterior" data-scroll="-1"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M13 4l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>' +
+        '<div class="track">' + list.map(cardHtml).join('') + '</div>' +
+        '<button class="arrow a-next" type="button" aria-label="Próximo" data-scroll="1"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div></section>';
+    }).join('');
   }
 
   /* ---------- listagem ---------- */
@@ -85,7 +121,7 @@
     if (p.price == null) return '<div class="price ask">Consulte o valor</div>';
     return '<div class="price">' + money(p.price) + '</div>' + (p.priceEstimated ? '<div class="ref">valor de referência</div>' : '');
   }
-  function availHtml(p) { return p.stock === 'in' ? '<div class="avail">Em estoque</div>' : '<div class="avail out">Sem estoque no momento</div>'; }
+  function availHtml(p) { return p.stock === 'in' ? '<div class="avail">Em estoque, retire na loja</div>' : '<div class="avail out">Sem estoque no momento</div>'; }
 
   function render() {
     var list = sorted(PRODUCTS.filter(matches));
@@ -94,8 +130,8 @@
     if (state.query) parts.push('“' + state.query + '”');
     $('resultLine').textContent = list.length + (list.length === 1 ? ' produto' : ' produtos') + (parts.length ? ': ' + parts.join(', ') : '');
     renderSide();
-
     if (!list.length) {
+      state.list = [];
       $('grid').innerHTML = '<div class="empty-state"><h3>Nada por aqui</h3>' +
         '<p>Não encontramos o que você buscou. Tente outra palavra, veja uma categoria ou pergunte para a equipe no WhatsApp.</p>' +
         '<div class="chips">' + CATEGORIES.slice(0, 6).map(function (c) { return '<button class="chip" type="button" data-cat="' + c.id + '" data-clear="1">' + esc(c.name) + '</button>'; }).join('') + '</div></div>';
@@ -113,7 +149,7 @@
       '<div class="body"><div class="brandline">' + esc(p.brand) + '</div>' +
       '<h3 class="name"><button type="button" data-open="' + p.id + '">' + esc(p.name) + '</button></h3>' +
       priceHtml(p) + availHtml(p) +
-      (out ? '<button class="buy alt" type="button" data-notify="' + p.id + '">Avisar quando chegar</button>'
+      (out ? '<button class="buy" type="button" data-notify="' + p.id + '">Avisar quando chegar</button>'
         : '<button class="buy" type="button" data-add="' + p.id + '">Adicionar ao carrinho</button>') +
       '</div></article>';
   }
@@ -131,6 +167,8 @@
   /* ---------- detalhe ---------- */
   function openDetail(id) {
     var p = byId(id); if (!p) return;
+    state.recent = [id].concat(state.recent.filter(function (x) { return x !== id; })).slice(0, 6);
+    store(RECENT_KEY, state.recent);
     var specs = Object.keys(p.specs || {}).map(function (k) { return '<tr><th scope="row">' + esc(k) + '</th><td>' + esc(p.specs[k]) + '</td></tr>'; }).join('');
     var msg = encodeURIComponent('Olá! Tenho uma dúvida sobre: ' + p.name);
     var thumbs = p.images.length > 1 ? '<div class="thumbs">' + p.images.map(function (src, i) {
@@ -144,15 +182,15 @@
       (specs ? '<h3>Especificações</h3><table class="specs"><tbody>' + specs + '</tbody></table>' : '') +
       '<h3>Entrega e retirada</h3><ul class="ship"><li>Entrega: frete calculado pelo CEP no checkout.</li><li>Retirada na loja: Av. Francisco Scarpari, 345, Goioerê.</li></ul>' +
       '<div class="actions">' +
-      (p.stock === 'out' ? '<button class="buy alt" type="button" data-notify="' + p.id + '">Avisar quando chegar</button>'
+      (p.stock === 'out' ? '<button class="buy" type="button" data-notify="' + p.id + '">Avisar quando chegar</button>'
         : '<button class="buy" type="button" data-add="' + p.id + '">Adicionar ao carrinho</button>') +
-      '<a class="buy alt" target="_blank" rel="noopener" data-event="whatsapp_click" data-where="produto" href="' + STORE.whatsappHref + '?text=' + msg + '">Tirar dúvida no WhatsApp</a>' +
+      '<a class="buy" target="_blank" rel="noopener" data-event="whatsapp_click" data-where="produto" href="' + STORE.whatsappHref + '?text=' + msg + '">Tirar dúvida no WhatsApp</a>' +
       '</div></div>';
     openLayer('modal', 'closeModal');
     track('view_item', { item_id: p.id });
   }
 
-  /* ---------- layers ---------- */
+  /* ---------- camadas ---------- */
   function openLayer(id, closeId) {
     state.lastFocus = document.activeElement;
     var el = $(id); el.classList.add('open'); el.setAttribute('aria-hidden', 'false');
@@ -163,6 +201,7 @@
     var el = $(id); el.classList.remove('open'); el.setAttribute('aria-hidden', 'true');
     if (!document.querySelector('.drawer.open,.modal.open')) document.body.style.overflow = '';
     if (state.lastFocus && state.lastFocus.focus) state.lastFocus.focus();
+    if (id === 'modal') renderQuick();
   }
 
   /* ---------- carrinho ---------- */
@@ -172,14 +211,10 @@
     saveCart(); renderCart(); track('add_to_cart', { item_id: id });
     bump(); toast('Adicionado: ' + byId(id).name);
   }
-  function bump() {
-    var c = $('count'); c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop');
-  }
+  function bump() { var c = $('count'); c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); }
   var toastTimer;
   function toast(msg) {
-    var t = $('toast');
-    t.querySelector('span').textContent = msg;
-    t.classList.add('show');
+    var t = $('toast'); t.querySelector('span').textContent = msg; t.classList.add('show');
     clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove('show'); }, 3200);
   }
   function flashButton(btn) {
@@ -205,7 +240,7 @@
     box.className = ''; foot.hidden = false;
     box.innerHTML = state.cart.map(function (i) {
       var p = byId(i.id);
-      return '<div class="cartrow"><div class="thumb">' + imgTag(p, '', true) + '</div><div><b>' + esc(p.name) + '</b>' +
+      return '<div class="cartrow"><div class="thumb">' + imgTag(p, '', true, true) + '</div><div><b>' + esc(p.name) + '</b>' +
         '<small>' + (p.price == null ? 'Consulte o valor' : money(p.price) + ' cada' + (p.priceEstimated ? ' (referência)' : '')) + '</small><br>' +
         '<span class="qty"><button type="button" data-dec="' + p.id + '" aria-label="Diminuir quantidade de ' + esc(p.name) + '">−</button>' +
         '<output aria-live="polite">' + i.qty + '</output>' +
@@ -226,15 +261,32 @@
     $('quoteLink').href = STORE.whatsappHref + '?text=' + encodeURIComponent('Olá! Quero confirmar valores e disponibilidade destes itens:\n' + lines);
   }
 
+  /* ---------- loja aberta ou fechada ---------- */
+  function openStatus() {
+    var now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+    var day = now.getDay(), min = now.getHours() * 60 + now.getMinutes();
+    var close = { 2: 18, 3: 18, 4: 18, 5: 18, 6: 12 }, open = 8 * 60;
+    var el = $('openNow');
+    if (close[day] !== undefined && min >= open && min < close[day] * 60) {
+      el.className = 'status'; el.innerHTML = '<b>Aberta agora</b>, fecha às ' + close[day] + 'h.';
+    } else {
+      var next = { 0: 'terça às 8h', 1: 'terça às 8h', 2: 'quarta às 8h', 3: 'quinta às 8h', 4: 'sexta às 8h', 5: 'sábado às 8h', 6: 'terça às 8h' };
+      var today = close[day] !== undefined && min < open;
+      el.className = 'status closed'; el.innerHTML = '<b>Fechada agora</b>, abre ' + (today ? 'hoje às 8h' : next[day]) + '.';
+    }
+  }
+
   /* ---------- eventos ---------- */
   function setFilter(c, clear) {
     state.category = c || null; state.shown = PAGE;
     if (clear) { state.query = ''; $('search').value = ''; }
     render();
   }
+  function closeDropdown() { $('ddPanel').hidden = true; $('ddBtn').setAttribute('aria-expanded', 'false'); }
   function wire() {
     document.addEventListener('click', function (e) {
-      var t = e.target.closest('[data-add],[data-open],[data-dec],[data-inc],[data-rm],[data-cat],[data-notify],[data-event],[data-thumb]');
+      var t = e.target.closest('[data-add],[data-open],[data-dec],[data-inc],[data-rm],[data-cat],[data-notify],[data-event],[data-thumb],[data-scroll],[data-slide]');
+      if (!$('ddPanel').hidden && !e.target.closest('.dd')) closeDropdown();
       if (!t) return;
       var d = t.dataset;
       if (d.add) { addToCart(d.add); flashButton(t); }
@@ -242,6 +294,8 @@
       else if (d.dec) setQty(d.dec, -1);
       else if (d.inc) setQty(d.inc, 1);
       else if (d.rm) removeItem(d.rm);
+      else if (d.scroll) { var tr = t.parentNode.querySelector('.track'); tr.scrollBy({ left: d.scroll * tr.clientWidth * 0.85, behavior: reduceMotion ? 'auto' : 'smooth' }); }
+      else if (d.slide !== undefined) { goSlide(+d.slide); autoplay(true); }
       else if (d.thumb !== undefined) {
         var name = $('dName').textContent, p = PRODUCTS.filter(function (x) { return x.name === name; })[0];
         $('galMain').innerHTML = imgTag({ images: [p.images[+d.thumb]] }, name);
@@ -253,11 +307,21 @@
         window.open(STORE.whatsappHref + '?text=' + encodeURIComponent('Olá! Quero ser avisado quando chegar: ' + byId(d.notify).name), '_blank', 'noopener');
       }
       else if (d.cat !== undefined) {
-        e.preventDefault(); setFilter(d.cat, !!d.clear || true);
+        e.preventDefault(); closeDropdown(); setFilter(d.cat, true);
         $('catalogo').scrollIntoView();
       }
       if (d.event === 'whatsapp_click') track('whatsapp_click', { where: d.where });
     });
+    $('ddBtn').onclick = function () {
+      var open = $('ddPanel').hidden; $('ddPanel').hidden = !open; this.setAttribute('aria-expanded', String(open));
+    };
+    $('bPrev').onclick = function () { goSlide(slide - 1); autoplay(true); };
+    $('bNext').onclick = function () { goSlide(slide + 1); autoplay(true); };
+    var ban = document.querySelector('.banner');
+    ban.addEventListener('mouseenter', function () { autoplay(false); });
+    ban.addEventListener('mouseleave', function () { autoplay(true); });
+    ban.addEventListener('focusin', function () { autoplay(false); });
+    ban.addEventListener('focusout', function () { autoplay(true); });
     $('moreBtn').onclick = showMore;
     $('onlyStock').onchange = function (e) { state.onlyStock = e.target.checked; state.shown = PAGE; render(); };
     $('sort').onchange = function (e) { state.sort = e.target.value; state.shown = PAGE; render(); };
@@ -275,7 +339,8 @@
     $('modal').onclick = function (e) { if (e.target.id === 'modal') closeLayer('modal'); };
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
-      if ($('modal').classList.contains('open')) closeLayer('modal');
+      if (!$('ddPanel').hidden) closeDropdown();
+      else if ($('modal').classList.contains('open')) closeLayer('modal');
       else if ($('drawer').classList.contains('open')) closeLayer('drawer');
     });
     document.querySelectorAll('input[name=mode]').forEach(function (r) {
@@ -291,19 +356,8 @@
     };
   }
 
-  function openStatus() {
-    var now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
-    var day = now.getDay(), min = now.getHours() * 60 + now.getMinutes();
-    var close = { 2: 18, 3: 18, 4: 18, 5: 18, 6: 12 }, open = 8 * 60;
-    var el = $('openNow');
-    if (close[day] !== undefined && min >= open && min < close[day] * 60) {
-      el.className = 'status'; el.innerHTML = '<b>Aberta agora</b>, fecha às ' + close[day] + 'h.';
-    } else {
-      var next = { 0: 'terça às 8h', 1: 'terça às 8h', 2: 'quarta às 8h', 3: 'quinta às 8h', 4: 'sexta às 8h', 5: 'sábado às 8h', 6: 'terça às 8h' };
-      var today = close[day] !== undefined && min < open;
-      el.className = 'status closed'; el.innerHTML = '<b>Fechada agora</b>, abre ' + (today ? 'hoje às 8h' : next[day]) + '.';
-    }
-  }
   $('hours').innerHTML = STORE.hours.map(function (h) { return esc(h[0]) + ': ' + esc(h[1]); }).join('<br>');
-  openStatus(); loadCart(); renderCats(); wire(); render(); renderCart();
+  state.recent = store(RECENT_KEY).filter(byId);
+  openStatus(); loadCart(); renderCats(); renderBanner(); renderQuick(); renderRows(); wire(); render(); renderCart();
+  goSlide(0); autoplay(true);
 })();

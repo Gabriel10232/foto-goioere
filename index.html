@@ -15,42 +15,90 @@
   <a class="skip" href="#catalogo">Pular para os produtos</a>
 
   <header class="site">
-    <div class="container head">
-      <a class="brand" href="#inicio" aria-label="Foto Goioerê Instrumentos Musicais, início"><img src="img/logo.webp" alt="Foto Goioerê Instrumentos Musicais" width="640" height="223" /></a>
-      <form class="search" role="search" id="searchForm">
-        <label class="visually-hidden" for="search">Buscar por nome, marca ou tipo de produto</label>
-        <input id="search" type="search" placeholder="Violão nylon, cabo P10, Giannini" autocomplete="off" />
-        <button type="submit">Buscar</button>
-      </form>
-      <button class="cart-btn" id="openCart" type="button" aria-label="Abrir carrinho"><span class="lbl">Carrinho</span> <span class="count" id="count">0</span></button>
+    <div class="topbar">
+      <div class="container head">
+        <a class="brand" href="#inicio" aria-label="Foto Goioerê Instrumentos Musicais, início"><span class="logo-plate"><img src="img/logo.webp" alt="Foto Goioerê Instrumentos Musicais" width="640" height="223" /></span></a>
+        <form class="search" role="search" id="searchForm">
+          <label class="visually-hidden" for="search">Buscar por nome, marca ou tipo de produto</label>
+          <input id="search" type="search" placeholder="Buscar instrumentos, marcas e acessórios" autocomplete="off" />
+          <button type="submit" aria-label="Buscar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
+        </form>
+        <a class="loc" href="#loja"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Retire em<br><b>Goioerê, PR</b></span></a>
+        <button class="cart-btn" id="openCart" type="button" aria-label="Abrir carrinho"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.5l2.2 10.5h9.6L19.5 7H6.4"/><circle cx="9" cy="19" r="1.3"/><circle cx="17" cy="19" r="1.3"/></svg><span class="count" id="count">0</span></button>
+      </div>
     </div>
-    <nav class="catnav" aria-label="Categorias"><div class="container nav" id="topNav"></div></nav>
+    <nav class="menu" aria-label="Menu principal">
+      <div class="container menu-row">
+        <div class="dd">
+          <button class="dd-btn" id="ddBtn" type="button" aria-expanded="false" aria-controls="ddPanel">Categorias <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+          <div class="dd-panel" id="ddPanel" hidden></div>
+        </div>
+        <a href="#destaques">Destaques</a>
+        <a href="#catalogo">Todos os produtos</a>
+        <a href="#loja">A loja</a>
+        <a href="#contato">Contato</a>
+        <a class="menu-wa" href="https://wa.me/5544999060030" target="_blank" rel="noopener" data-event="whatsapp_click" data-where="menu">WhatsApp (44) 99906-0030</a>
+      </div>
+    </nav>
   </header>
 
   <main id="inicio">
-    <section class="hero" aria-labelledby="heroTitle">
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <h1 id="heroTitle">Toque antes de levar.</h1>
-          <p class="lead">Violões, teclados, cordas e acessórios, na loja ou em casa.</p>
-          <div class="hero-actions">
-            <a class="btn" href="#catalogo">Ver produtos</a>
-            <a class="btn ghost" href="https://wa.me/5544999060030" target="_blank" rel="noopener" data-event="whatsapp_click" data-where="hero">Falar no WhatsApp</a>
+    <section class="banner" aria-roledescription="carousel" aria-label="Destaques da loja">
+      <div class="slides" id="slides">
+        <article class="slide s-store" aria-roledescription="slide" aria-label="1 de 4">
+          <img class="s-bg" src="img/loja.webp" alt="Interior da loja Foto Goioerê, com violões, guitarras, bateria e caixas de som" width="1800" height="860" />
+          <div class="container s-copy">
+            <h2>Venha tocar antes de levar.</h2>
+            <p>Violões, guitarras, bateria, teclados e som, tudo exposto na loja em Goioerê.</p>
+            <a class="btn" href="#loja">Ver a loja</a>
           </div>
-          <p class="status" id="openNow" role="status"></p>
-        </div>
-        <div class="hero-photos" id="heroPhotos" aria-hidden="true"></div>
+        </article>
+        <article class="slide s-green" aria-roledescription="slide" aria-label="2 de 4" data-cat="violoes">
+          <div class="container s-grid">
+            <div class="s-copy"><h2>Violões, violas e ukuleles.</h2><p>Do primeiro violão ao instrumento de palco.</p><button class="btn" type="button" data-cat="violoes">Ver violões</button></div>
+            <div class="s-photos" data-photos="violoes"></div>
+          </div>
+        </article>
+        <article class="slide s-black" aria-roledescription="slide" aria-label="3 de 4" data-cat="encordoamentos">
+          <div class="container s-grid">
+            <div class="s-copy"><h2>Cordas para todo instrumento.</h2><p>Giannini, Daddario, Elixir, Ernie Ball e mais.</p><button class="btn" type="button" data-cat="encordoamentos">Ver encordoamentos</button></div>
+            <div class="s-photos" data-photos="encordoamentos"></div>
+          </div>
+        </article>
+        <article class="slide s-red" aria-roledescription="slide" aria-label="4 de 4" data-cat="microfones">
+          <div class="container s-grid">
+            <div class="s-copy"><h2>Microfones e som para palco.</h2><p>Com fio, sem fio, mesas e caixas amplificadas.</p><button class="btn" type="button" data-cat="microfones">Ver microfones</button></div>
+            <div class="s-photos" data-photos="microfones"></div>
+          </div>
+        </article>
       </div>
+      <button class="arrow a-prev" id="bPrev" type="button" aria-label="Destaque anterior"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M13 4l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <button class="arrow a-next" id="bNext" type="button" aria-label="Próximo destaque"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <div class="dots" id="dots" role="tablist" aria-label="Escolher destaque"></div>
     </section>
 
-    <section class="container block" id="categorias" aria-labelledby="catTitle">
-      <h2 id="catTitle">Categorias</h2>
-      <div class="cat-tiles" id="catTiles"></div>
+    <section class="container quick" aria-label="Como comprar">
+      <article class="qcard"><h3>Retire na loja</h3><p>Av. Francisco Scarpari, 345, em Goioerê.</p><a href="#loja">Ver horários</a></article>
+      <article class="qcard"><h3>Entrega</h3><p>Enviamos para todo o Brasil. Frete pelo CEP no checkout.</p><a href="#catalogo">Ver produtos</a></article>
+      <article class="qcard" id="recentCard"></article>
+      <article class="qcard"><h3>Dúvidas?</h3><p>A equipe tira suas dúvidas antes da compra.</p><a href="https://wa.me/5544999060030" target="_blank" rel="noopener" data-event="whatsapp_click" data-where="quick">Falar no WhatsApp</a></article>
+    </section>
+
+    <section class="container" id="categorias" aria-labelledby="catTitle">
+      <h2 class="sr-h" id="catTitle">Categorias</h2>
+      <div class="cat-chips" id="catTiles"></div>
+    </section>
+
+    <div id="destaques"><div id="rows"></div></div>
+
+    <section class="container promos" aria-label="Chamadas">
+      <a class="promo p-dark" href="https://wa.me/5544999060030" target="_blank" rel="noopener" data-event="whatsapp_click" data-where="promo"><span><b>Não achou o que procura?</b>Pergunte para a equipe no WhatsApp.</span></a>
+      <a class="promo p-green" href="#loja"><span><b>Conheça a loja</b>Instrumentos expostos para você tocar.</span></a>
     </section>
 
     <section class="container block" id="catalogo" aria-labelledby="prodTitle">
       <div class="sec-head">
-        <h2 id="prodTitle">Produtos</h2>
+        <h2 id="prodTitle">Todos os produtos</h2>
         <div class="tools">
           <label class="check"><input type="checkbox" id="onlyStock" /> Só em estoque</label>
           <label class="visually-hidden" for="sort">Ordenar</label>
@@ -58,7 +106,7 @@
         </div>
       </div>
       <div class="catalog">
-        <aside class="side" aria-label="Filtrar por categoria"><ul id="sideCats"></ul></aside>
+        <aside class="side" aria-label="Filtrar por categoria"><h3>Categorias</h3><ul id="sideCats"></ul></aside>
         <div>
           <p class="result-line" id="resultLine" role="status" aria-live="polite"></p>
           <div class="grid" id="grid"></div>
@@ -67,33 +115,29 @@
       </div>
     </section>
 
-    <section class="container block ways" aria-labelledby="waysTitle">
-      <h2 id="waysTitle">Entrega ou retirada</h2>
-      <div class="ways-cols">
-        <div><h3>Entrega</h3><p>Enviamos para todo o Brasil. O frete é calculado pelo CEP no checkout.</p></div>
-        <div><h3>Retirada</h3><p>Pegue na loja, na Av. Francisco Scarpari, 345, em Goioerê.</p></div>
-      </div>
-    </section>
-
     <section class="container block visit" id="loja" aria-labelledby="visitTitle">
-      <div>
+      <figure class="store-photo">
+        <img src="img/loja.webp" alt="Interior da loja Foto Goioerê" width="1800" height="860" loading="lazy" />
+      </figure>
+      <div class="store-card">
         <h2 id="visitTitle">A loja fica em Goioerê.</h2>
         <p>Os instrumentos ficam expostos. A equipe mostra a diferença entre os modelos e tira dúvidas pelo WhatsApp.</p>
-        <a class="btn dark" href="https://www.google.com/maps/search/?api=1&query=Av.+Francisco+Scarpari+345+Goioer%C3%AA+PR" target="_blank" rel="noopener">Ver no mapa</a>
+        <dl class="hours-box">
+          <dt>Endereço</dt><dd>Av. Francisco Scarpari, nº 345<br>Goioerê, Paraná</dd>
+          <dt>Telefone</dt><dd><a href="tel:+554435222020">(44) 3522-2020</a></dd>
+          <dt>Horário</dt><dd id="hours"></dd>
+        </dl>
+        <p class="status" id="openNow" role="status"></p>
+        <a class="btn" href="https://www.google.com/maps/search/?api=1&query=Av.+Francisco+Scarpari+345+Goioer%C3%AA+PR" target="_blank" rel="noopener">Ver no mapa</a>
       </div>
-      <dl class="hours-box">
-        <div class="logo-plate"><img src="img/logo.webp" alt="Foto Goioerê Instrumentos Musicais" width="640" height="223" loading="lazy" /></div>
-        <dt>Endereço</dt><dd>Av. Francisco Scarpari, nº 345<br>Goioerê, Paraná</dd>
-        <dt>Telefone</dt><dd><a href="tel:+554435222020">(44) 3522-2020</a></dd>
-        <dt>Horário</dt><dd id="hours"></dd>
-      </dl>
     </section>
   </main>
 
   <footer id="contato" class="site">
     <div class="container footer-grid">
-      <div class="logo-plate"><img src="img/logo.webp" alt="Foto Goioerê Instrumentos Musicais" width="640" height="223" loading="lazy" /></div>
-      <div><h3>Atendimento</h3><p>Dúvidas pelo WhatsApp<br><a href="https://wa.me/5544999060030" target="_blank" rel="noopener" data-event="whatsapp_click" data-where="footer">(44) 99906-0030</a></p></div>
+      <div><span class="logo-plate"><img src="img/logo.webp" alt="Foto Goioerê Instrumentos Musicais" width="640" height="223" loading="lazy" /></span><p class="f-about">Instrumentos musicais, acessórios, som e iluminação, em Goioerê, Paraná.</p></div>
+      <div><h3>Comprar</h3><ul class="f-links" id="footCats"></ul></div>
+      <div><h3>Atendimento</h3><p>Dúvidas pelo WhatsApp<br><a href="https://wa.me/5544999060030" target="_blank" rel="noopener" data-event="whatsapp_click" data-where="footer">(44) 99906-0030</a></p><p>Telefone<br><a href="tel:+554435222020">(44) 3522-2020</a></p></div>
       <div><h3>Loja</h3><p>Av. Francisco Scarpari, nº 345<br>Goioerê, Paraná</p><p class="holiday">Em feriados o horário pode mudar. Confirme antes de vir.</p></div>
     </div>
   </footer>
