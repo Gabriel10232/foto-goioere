@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Foto Goioerê Instrumentos Musicais, Goioerê PR</title>
+  <meta name="description" content="Violões, guitarras, teclados, microfones, cordas e acessórios. Compre online com entrega ou retire na loja em Goioerê, Paraná." />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <a class="skip" href="#catalogo">Pular para os produtos</a>
+
+  <header class="site">
+    <div class="container head">
+      <a class="brand" href="#inicio" aria-label="Foto Goioerê Instrumentos Musicais, início"><img src="img/logo.webp" alt="Foto Goioerê Instrumentos Musicais" width="640" height="223" /></a>
+      <form class="search" role="search" id="searchForm">
+        <label class="visually-hidden" for="search">Buscar por nome, marca ou tipo de produto</label>
+        <input id="search" type="search" placeholder="Violão nylon, cabo P10, Giannini" autocomplete="off" />
+        <button type="submit">Buscar</button>
+      </form>
+      <button class="cart-btn" id="openCart" type="button" aria-label="Abrir carrinho"><span class="lbl">Carrinho</span> <span class="count" id="count">0</span></button>
+    </div>
+    <nav class="catnav" aria-label="Categorias"><div class="container nav" id="topNav"></div></nav>
+  </header>
+
+  <main id="inicio">
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <h1 id="heroTitle">Toque antes de levar.</h1>
+          <p class="lead">Violões, teclados, cordas e acessórios, na loja ou em casa.</p>
+          <div class="hero-actions">
+            <a class="btn" href="#catalogo">Ver produtos</a>
+            <a class="btn ghost" href="https://wa.me/5544999060030" target="_blank" rel="noopener" data-event="whatsapp_click" data-where="hero">Falar no WhatsApp</a>
+          </div>
+          <p class="status" id="openNow" role="status"></p>
+        </div>
+        <div class="hero-photos" id="heroPhotos" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <section class="container block" id="categorias" aria-labelledby="catTitle">
+      <h2 id="catTitle">Categorias</h2>
+      <div class="cat-tiles" id="catTiles"></div>
+    </section>
+
+    <section class="container block" id="catalogo" aria-labelledby="prodTitle">
+      <div class="sec-head">
+        <h2 id="prodTitle">Produtos</h2>
+        <div class="tools">
+          <label class="check"><input type="checkbox" id="onlyStock" /> Só em estoque</label>
+          <label class="visually-hidden" for="sort">Ordenar</label>
+          <select id="sort"><option value="rel">Em destaque</option><option value="az">Nome A a Z</option><option value="price">Com preço primeiro</option></select>
+        </div>
+      </div>
+      <div class="catalog">
+        <aside class="side" aria-label="Filtrar por categoria"><ul id="sideCats"></ul></aside>
+        <div>
+          <p class="result-line" id="resultLine" role="status" aria-live="polite"></p>
+          <div class="grid" id="grid"></div>
+          <div class="more"><button class="btn dark" type="button" id="moreBtn">Mostrar mais produtos</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container block ways" aria-labelledby="waysTitle">
+      <h2 id="waysTitle">Entrega ou retirada</h2>
+      <div class="ways-cols">
+        <div><h3>Entrega</h3><p>Enviamos para todo o Brasil. O frete é calculado pelo CEP no checkout.</p></div>
+        <div><h3>Retirada</h3><p>Pegue na loja, na Av. Francisco Scarpari, 345, em Goioerê.</p></div>
+      </div>
+    </section>
+
+    <section class="container block visit" id="loja" aria-labelledby="visitTitle">
+      <div>
+        <h2 id="visitTitle">A loja fica em Goioerê.</h2>
+        <p>Os instrumentos ficam expostos. A equipe mostra a diferença entre os modelos e tira dúvidas pelo WhatsApp.</p>
+        <a class="btn dark" href="https://www.google.com/maps/search/?api=1&query=Av.+Francisco+Scarpari+345+Goioer%C3%AA+PR" target="_blank" rel="noopener">Ver no mapa</a>
+      </div>
+      <dl class="hours-box">
+        <div class="logo-plate"><img src="img/logo.webp" alt="Foto Goioerê Instrumentos Musicais" width="640" height="223" loading="lazy" /></div>
+        <dt>Endereço</dt><dd>Av. Francisco Scarpari, nº 345<br>Goioerê, Paraná</dd>
+        <dt>Telefone</dt><dd><a href="tel:+554435222020">(44) 3522-2020</a></dd>
+        <dt>Horário</dt><dd id="hours"></dd>
+      </dl>
+    </section>
+  </main>
+
+  <footer id="contato" class="site">
+    <div class="container footer-grid">
+      <div class="logo-plate"><img src="img/logo.webp" alt="Foto Goioerê Instrumentos Musicais" width="640" height="223" loading="lazy" /></div>
+      <div><h3>Atendimento</h3><p>Dúvidas pelo WhatsApp<br><a href="https://wa.me/5544999060030" target="_blank" rel="noopener" data-event="whatsapp_click" data-where="footer">(44) 99906-0030</a></p></div>
+      <div><h3>Loja</h3><p>Av. Francisco Scarpari, nº 345<br>Goioerê, Paraná</p><p class="holiday">Em feriados o horário pode mudar. Confirme antes de vir.</p></div>
+    </div>
+  </footer>
+
+  <a class="floating" href="https://wa.me/5544999060030" target="_blank" rel="noopener" aria-label="Falar no WhatsApp" data-event="whatsapp_click" data-where="floating">WhatsApp</a>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"><span></span><button type="button" id="toastOpen">Ver carrinho</button></div>
+
+  <div class="drawer" id="drawer" aria-hidden="true">
+    <aside class="drawer-card" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+      <div class="drawer-top"><h2 id="cartTitle">Seu carrinho</h2><button class="close" id="closeCart" type="button" aria-label="Fechar carrinho">×</button></div>
+      <div id="cartItems"></div>
+      <div class="cart-foot" id="cartFoot" hidden>
+        <fieldset class="delivery">
+          <legend>Como receber?</legend>
+          <label><input type="radio" name="mode" value="entrega" checked /> Entrega</label>
+          <label><input type="radio" name="mode" value="retirada" /> Retirar na loja</label>
+          <div id="cepBox">
+            <div class="cep"><label class="visually-hidden" for="cep">CEP</label><input id="cep" type="text" inputmode="numeric" maxlength="9" placeholder="CEP" autocomplete="postal-code" /></div>
+            <p class="hint">O frete depende do CEP e é calculado no checkout.</p>
+          </div>
+        </fieldset>
+        <div class="total"><span>Subtotal</span><span id="total">0</span></div>
+        <p class="note" id="totalNote"></p>
+        <button class="checkout" id="checkout" type="button">Ir para o checkout</button>
+        <a class="quote" id="quoteLink" target="_blank" rel="noopener" data-event="whatsapp_click" data-where="carrinho">Confirmar valores pelo WhatsApp</a>
+        <p class="priv">Não pedimos dados de pagamento aqui. O pagamento acontece no checkout oficial da loja.</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="dName">
+      <button class="close" id="closeModal" type="button" aria-label="Fechar detalhes">×</button>
+      <div class="detail" id="detail"></div>
+    </div>
+  </div>
+
+  <script src="data/products.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
