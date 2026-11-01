@@ -75,8 +75,7 @@
   }
   function goSlide(i) {
     slide = (i + slideCount) % slideCount;
-    $('slides').style.transform = 'translateX(-' + slide * 100 + '%)';
-    document.querySelectorAll('.slide').forEach(function (s, k) { s.setAttribute('aria-hidden', String(k !== slide)); s.inert = k !== slide; });
+    document.querySelectorAll('.slide').forEach(function (s, k) { s.classList.toggle('is-active', k === slide); s.setAttribute('aria-hidden', String(k !== slide)); s.inert = k !== slide; });
     document.querySelectorAll('#dots button').forEach(function (b, k) { b.setAttribute('aria-selected', String(k === slide)); });
   }
   function autoplay(on) {
