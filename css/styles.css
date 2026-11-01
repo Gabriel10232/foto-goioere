@@ -456,3 +456,58 @@ footer a { color: var(--color-paper); text-decoration: underline; }
 
 /* troca por fusão: sem arrastar de volta ao primeiro slide */
 .slide.is-active { opacity: 1; visibility: visible; z-index: 1; transition: opacity 700ms var(--ease-out), visibility 0s; }
+
+
+/* ===== animações ===== */
+/* revelar ao rolar */
+.js .reveal { opacity: 0; transform: translateY(28px); transition: opacity 700ms var(--ease-out), transform 700ms var(--ease-out); transition-delay: var(--d, 0ms); }
+.js .reveal.in { opacity: 1; transform: none; }
+.js .cat-chips .chip-cat.reveal { transform: translateY(16px) scale(0.92); }
+.js .cat-chips .chip-cat.reveal.in { transform: none; }
+
+/* banner: textos entram em sequência e a foto da loja se aproxima devagar */
+.slide.is-active .s-copy > *, .slide.is-active .s-photos figure { animation: rise 760ms var(--ease-out) backwards; }
+.slide.is-active .s-copy > :nth-child(1) { animation-delay: 160ms; }
+.slide.is-active .s-copy > :nth-child(2) { animation-delay: 260ms; }
+.slide.is-active .s-copy > :nth-child(3) { animation-delay: 360ms; }
+.slide.is-active .s-photos figure:nth-child(1) { animation-delay: 220ms; }
+.slide.is-active .s-photos figure:nth-child(2) { animation-delay: 320ms; }
+.slide.is-active .s-photos figure:nth-child(3) { animation-delay: 420ms; }
+.s-store .s-bg { transform: scale(1); }
+.s-store.is-active .s-bg { animation: zoom-slow 9s ease-out forwards; }
+@keyframes zoom-slow { from { transform: scale(1); } to { transform: scale(1.08); } }
+
+/* bolinhas viram barra de progresso */
+.dots button { position: relative; overflow: hidden; transition: width 320ms var(--ease-out), background var(--dur-short) var(--ease-out); }
+.dots button[aria-selected="true"] { width: 40px; background: oklch(98% 0.01 140 / 35%); }
+.dots button i { position: absolute; inset: 0; display: block; background: var(--color-accent-ink); transform: scaleX(0); transform-origin: left; }
+.dots button[aria-selected="true"] i { animation: dot-fill 6500ms linear forwards; }
+.banner:hover .dots i, .banner:focus-within .dots i { animation-play-state: paused; }
+@keyframes dot-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) { .dots button i { display: none; } .dots button[aria-selected="true"] { background: var(--color-accent-ink); } }
+
+/* cartões, categorias e botões respondem ao toque */
+.card .ph img { transition: transform 450ms var(--ease-out); }
+.card:hover .ph img { transform: scale(1.06); }
+.chip-cat .c-img { transition: transform 300ms var(--ease-out), box-shadow var(--dur-short) var(--ease-out), background var(--dur-short) var(--ease-out); }
+.chip-cat:hover .c-img { transform: translateY(-4px) scale(1.05); }
+.chip-cat:active .c-img { transform: scale(0.96); }
+.qcard { transition: transform 300ms var(--ease-out), box-shadow 300ms var(--ease-out); }
+.qcard:hover { transform: translateY(-4px); box-shadow: 0 10px 24px oklch(17% 0.01 150 / 20%); }
+.promo { transition: background var(--dur-short) var(--ease-out), transform 300ms var(--ease-out); }
+.promo:hover { transform: translateY(-3px); }
+.buy, .btn, .qcard > a, .checkout, .quote, .m-wa, .back, .chip { transition: background var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out), transform 140ms var(--ease-out); }
+.buy:active, .btn:active, .qcard > a:active, .checkout:active, .quote:active, .m-wa:active, .back:active, .chip:active { transform: scale(0.96); }
+.cart-btn { transition: background var(--dur-short) var(--ease-out), transform 140ms var(--ease-out); }
+.cart-btn:active { transform: scale(0.92); }
+.count.pop { animation: pop 520ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes pop { 0% { transform: scale(1); } 35% { transform: scale(1.6); } 100% { transform: scale(1); } }
+header.site { transition: box-shadow 300ms var(--ease-out); }
+header.site.scrolled { box-shadow: 0 6px 20px oklch(17% 0.01 150 / 28%); }
+
+/* aviso e carrinho com movimento mais vivo */
+.toast { transition: transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 240ms var(--ease-out); }
+.cartrow { animation: rise 420ms var(--ease-out) backwards; }
+.cartrow:nth-child(2) { animation-delay: 60ms; } .cartrow:nth-child(3) { animation-delay: 120ms; } .cartrow:nth-child(n+4) { animation-delay: 180ms; }
+.empty-state { animation: rise 420ms var(--ease-out) backwards; }
+.result-line { transition: opacity var(--dur-short) var(--ease-out); }
