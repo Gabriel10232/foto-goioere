@@ -49,6 +49,9 @@
     $('ddPanel').innerHTML = '<a href="#catalogo" data-cat="">Todos os produtos <small>' + PRODUCTS.length + '</small></a>' + CATEGORIES.map(function (c) {
       return '<a href="#catalogo" data-cat="' + c.id + '">' + esc(c.name) + ' <small>' + (n[c.id] || 0) + '</small></a>';
     }).join('');
+    $('mPanel').innerHTML = '<a href="#catalogo" data-cat="">Todos os produtos <small>' + PRODUCTS.length + '</small></a>' + CATEGORIES.map(function (c) {
+      return '<a href="#catalogo" data-cat="' + c.id + '">' + esc(c.name) + ' <small>' + (n[c.id] || 0) + '</small></a>';
+    }).join('') + '<hr><a href="#destaques">Destaques</a><a href="#loja">A loja</a><a href="#contato">Contato</a><a href="https://wa.me/5544999060030" target="_blank" rel="noopener" data-event="whatsapp_click" data-where="menu-mobile">WhatsApp (44) 99906-0030</a>';
     $('footCats').innerHTML = CATEGORIES.map(function (c) { return '<li><button type="button" data-cat="' + c.id + '">' + esc(c.name) + '</button></li>'; }).join('');
   }
   function renderSide() {
@@ -282,11 +285,13 @@
     if (clear) { state.query = ''; $('search').value = ''; }
     render();
   }
+  function closeMenu() { $('mPanel').hidden = true; $('burger').setAttribute('aria-expanded', 'false'); }
   function closeDropdown() { $('ddPanel').hidden = true; $('ddBtn').setAttribute('aria-expanded', 'false'); }
   function wire() {
     document.addEventListener('click', function (e) {
       var t = e.target.closest('[data-add],[data-open],[data-dec],[data-inc],[data-rm],[data-cat],[data-notify],[data-event],[data-thumb],[data-scroll],[data-slide]');
       if (!$('ddPanel').hidden && !e.target.closest('.dd')) closeDropdown();
+      if (!$('mPanel').hidden && (e.target.closest('#mPanel a') || !e.target.closest('#burger, #mPanel'))) closeMenu();
       if (!t) return;
       var d = t.dataset;
       if (d.add) { addToCart(d.add); flashButton(t); }
@@ -312,6 +317,9 @@
       }
       if (d.event === 'whatsapp_click') track('whatsapp_click', { where: d.where });
     });
+    $('burger').onclick = function () {
+      var open = $('mPanel').hidden; $('mPanel').hidden = !open; this.setAttribute('aria-expanded', String(open));
+    };
     $('ddBtn').onclick = function () {
       var open = $('ddPanel').hidden; $('ddPanel').hidden = !open; this.setAttribute('aria-expanded', String(open));
     };
@@ -345,7 +353,8 @@
     $('modal').onclick = function (e) { if (e.target.id === 'modal') closeLayer('modal'); };
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
-      if (!$('ddPanel').hidden) closeDropdown();
+      if (!$('mPanel').hidden) closeMenu();
+      else if (!$('ddPanel').hidden) closeDropdown();
       else if ($('modal').classList.contains('open')) closeLayer('modal');
       else if ($('drawer').classList.contains('open')) closeLayer('drawer');
     });
