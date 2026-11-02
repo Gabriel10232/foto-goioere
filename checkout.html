@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b4f14" />
+  <meta name="robots" content="noindex" />
+  <title>Finalizar compra, Foto Goioerê</title>
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/checkout.css" />
+</head>
+<body class="ck">
+  <header class="ck-head">
+    <div class="container ck-bar">
+      <a class="logo-plate" href="index.html" aria-label="Foto Goioerê, voltar à loja"><img src="img/logo.webp" alt="Foto Goioerê Instrumentos Musicais" width="640" height="223" /></a>
+      <a class="ck-back" href="index.html">Continuar comprando</a>
+    </div>
+  </header>
+
+  <div class="ck-demo" id="demoBanner" hidden role="note"><div class="container"><b>Modo demonstração.</b> Este checkout ainda não está ligado ao pagamento. Nenhum pedido é criado e nada é cobrado.</div></div>
+
+  <main class="container ck-main" id="ckMain">
+    <div class="ck-empty" id="emptyBox" hidden>
+      <h1>Seu carrinho está vazio</h1>
+      <p>Escolha produtos na loja para continuar.</p>
+      <a class="btn" href="index.html">Ver produtos</a>
+    </div>
+
+    <div class="ck-grid" id="ckGrid" hidden>
+      <div class="ck-steps">
+        <h1>Finalizar compra</h1>
+        <ol class="ck-progress" aria-label="Etapas"><li data-p="1">Seus dados</li><li data-p="2">Entrega</li><li data-p="3">Pagamento</li></ol>
+
+        <div class="ck-block" id="blockUnconfirmed" hidden role="alert"></div>
+
+        <section class="ck-card" id="step1" aria-labelledby="h1s">
+          <div class="ck-card-head"><h2 id="h1s"><span class="n">1</span> Seus dados</h2><button class="ck-edit" type="button" data-edit="1" hidden>Editar</button></div>
+          <div class="ck-summary" id="sum1" hidden></div>
+          <form class="ck-form" id="form1" novalidate autocomplete="on">
+            <label class="f f-full">Nome completo<input name="name" autocomplete="name" required maxlength="80" /><small class="err" data-err="name"></small></label>
+            <label class="f">E-mail<input name="email" type="email" autocomplete="email" inputmode="email" required maxlength="120" /><small class="err" data-err="email"></small></label>
+            <label class="f">WhatsApp ou telefone<input name="phone" type="tel" autocomplete="tel-national" inputmode="tel" placeholder="(44) 99999-9999" required /><small class="err" data-err="phone"></small></label>
+            <label class="f">CPF<input name="cpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" required /><small class="err" data-err="cpf"></small></label>
+            <p class="f f-full ck-note">Usamos seus dados só para processar o pagamento, entregar o pedido e avisar sobre ele. O CPF é exigido pelo pagamento (Pix e cartão).</p>
+            <div class="f f-full"><button class="ck-next" type="submit">Continuar para a entrega</button></div>
+          </form>
+        </section>
+
+        <section class="ck-card" id="step2" aria-labelledby="h2s" data-locked>
+          <div class="ck-card-head"><h2 id="h2s"><span class="n">2</span> Entrega</h2><button class="ck-edit" type="button" data-edit="2" hidden>Editar</button></div>
+          <div class="ck-summary" id="sum2" hidden></div>
+          <form class="ck-form" id="form2" novalidate hidden>
+            <fieldset class="f f-full opts">
+              <legend class="visually-hidden">Como receber</legend>
+              <label class="opt"><input type="radio" name="mode" value="retirada" checked /><span><b>Retirar na loja</b><small>Av. Francisco Scarpari, 345, Goioerê. Sem custo.</small></span><em>Grátis</em></label>
+              <label class="opt"><input type="radio" name="mode" value="entrega" /><span><b>Receber em casa</b><small>Frete calculado pelo CEP.</small></span></label>
+            </fieldset>
+            <div class="f-full ck-address" id="addrBox" hidden>
+              <div class="ck-form inner">
+                <label class="f">CEP<input name="cep" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" maxlength="9" /><small class="err" data-err="cep"></small></label>
+                <label class="f f-wide">Rua<input name="street" autocomplete="address-line1" maxlength="100" /><small class="err" data-err="street"></small></label>
+                <label class="f">Número<input name="number" maxlength="12" inputmode="numeric" /><small class="err" data-err="number"></small></label>
+                <label class="f">Complemento<input name="complement" maxlength="60" autocomplete="address-line2" /></label>
+                <label class="f">Bairro<input name="district" maxlength="60" /></label>
+                <label class="f">Cidade<input name="city" maxlength="60" autocomplete="address-level2" /><small class="err" data-err="city"></small></label>
+                <label class="f">UF<input name="state" maxlength="2" autocomplete="address-level1" /></label>
+              </div>
+              <div class="ship" id="shipBox" aria-live="polite"></div>
+            </div>
+            <div class="f f-full"><button class="ck-next" type="submit">Continuar para o pagamento</button></div>
+          </form>
+        </section>
+
+        <section class="ck-card" id="step3" aria-labelledby="h3s" data-locked>
+          <div class="ck-card-head"><h2 id="h3s"><span class="n">3</span> Pagamento</h2></div>
+          <div class="ck-pay" id="payBox" hidden>
+            <div id="brickBox"></div>
+            <div class="ck-demo-pay" id="demoPay" hidden>
+              <p><b>Pix e cartão de crédito</b></p>
+              <p>No pagamento real, você escolhe Pix ou cartão aqui, e o pedido é confirmado automaticamente. Os dados do cartão são digitados no ambiente do Mercado Pago, nunca no nosso site.</p>
+              <button class="ck-next" type="button" id="demoFinish">Simular finalização (nada será cobrado)</button>
+            </div>
+            <p class="ck-note" id="payMsg" role="status"></p>
+          </div>
+        </section>
+      </div>
+
+      <aside class="ck-side" aria-label="Resumo do pedido">
+        <div class="ck-sum">
+          <h2>Resumo</h2>
+          <ul class="ck-items" id="sumItems"></ul>
+          <dl class="ck-totals">
+            <div><dt>Produtos</dt><dd id="tSub"></dd></div>
+            <div><dt>Entrega</dt><dd id="tShip">A escolher</dd></div>
+            <div class="grand"><dt>Total</dt><dd id="tTotal"></dd></div>
+          </dl>
+          <p class="ck-note">Pagamento seguro pelo Mercado Pago. Você recebe a confirmação por e-mail e pode acompanhar o pedido na página dele.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="data/products.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>

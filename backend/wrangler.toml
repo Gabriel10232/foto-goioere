@@ -1,0 +1,25 @@
+name = "fotogoioere-api"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# 1) Crie o armazenamento dos pedidos:  npx wrangler kv namespace create ORDERS
+# 2) Cole o "id" que ele mostrar logo abaixo.
+[[kv_namespaces]]
+binding = "ORDERS"
+id = "COLE_AQUI_O_ID_DO_KV"
+
+[vars]
+# Endereços (sem barra no final). Ajuste depois de publicar.
+SITE_URL = "https://gabriel10232.github.io/foto-goioere"
+ALLOWED_ORIGINS = "https://gabriel10232.github.io"
+PUBLIC_BASE_URL = "https://fotogoioere-api.SEU-USUARIO.workers.dev"
+ORIGIN_CEP = "87360000"
+STORE_EMAIL = "COLOQUE_O_EMAIL_DA_LOJA"
+FROM_EMAIL = "Foto Goioerê <pedidos@SEU-DOMINIO.com.br>"
+
+# Segredos NÃO ficam aqui. Cadastre com:  npx wrangler secret put NOME
+#   MP_ACCESS_TOKEN      credencial de produção (ou de teste) do Mercado Pago
+#   MP_WEBHOOK_SECRET    "assinatura secreta" do webhook, no painel do Mercado Pago
+#   ADMIN_TOKEN          senha do painel de pedidos (invente uma longa)
+#   RESEND_API_KEY       (opcional) para os e-mails automáticos
+#   MELHOR_ENVIO_TOKEN   (opcional) para calcular o frete

@@ -434,7 +434,7 @@
     });
     $('checkout').onclick = function () {
       track('begin_checkout', { items: state.cart.length });
-      alert('Protótipo: o checkout real será conectado à Nuvemshop. Nenhum pagamento é feito aqui.');
+      location.href = 'checkout.html';
     };
   }
 
