@@ -149,3 +149,6 @@ body.ck { background: var(--color-paper); }
 
 /* navegadores sem :has() */
 .opt.on { border-color: var(--color-accent); background: var(--tint-accent); }
+
+.ck-bar .ck-logo .emblem { width: 44px; height: 44px; }
+.ck-bar .ck-logo b { font-size: var(--text-lg); }
