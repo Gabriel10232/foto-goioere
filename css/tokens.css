@@ -1,3 +1,64 @@
+/* Cores: base em hex (funciona em navegador antigo, ex. Chrome 109 do Windows 7); oklch() só onde há suporte. */
+:root {
+  --color-sand: #f1eadb;
+  --color-sand-2: #e7dcc7;
+  --color-rose: #f4e2de;
+  --color-rose-2: #ecd0c9;
+  --color-error: #be2323;
+  --color-success: #21763c;
+  --color-paper: #f6f8f2;
+  --color-paper-2: #e9ede4;
+  --color-paper-3: #dbe0d5;
+  --color-photo: #fbfcf9;
+  --color-ink: #0c110d;
+  --color-ink-2: #343a35;
+  --color-muted: #535a54;
+  --color-rule: #c8ccc4;
+  --color-deep: #152318;
+  --color-deep-ink: #e9ede6;
+  --color-signal: #bb0a10;
+  --color-red: #c50710;
+  --color-red-on-dark: #fd7466;
+  --color-field: #005b13;
+  --color-field-deep: #00480e;
+  --color-accent-deep: #004c09;
+  --color-red-deep: #9b0000;
+  --tint-accent: #d8efd8;
+  --tint-accent-2: #c0e3c0;
+  --tint-accent-3: #a7d6a8;
+  --color-accent: #09611a;
+  --color-accent-ink: #f5faf4;
+  --color-focus: #09611a;
+}
+@supports (color: oklch(0% 0 0)) {
+:root {
+  --color-error: oklch(52% 0.19 27);
+  --color-success: oklch(50% 0.12 150);
+  --color-paper: oklch(97.5% 0.008 120);
+  --color-paper-2: oklch(94% 0.012 125);
+  --color-paper-3: oklch(90% 0.016 125);
+  --color-photo: oklch(99% 0.004 120);
+  --color-ink: oklch(17% 0.01 150);
+  --color-ink-2: oklch(34% 0.012 150);
+  --color-muted: oklch(46% 0.014 150);
+  --color-rule: oklch(84% 0.012 130);
+  --color-deep: oklch(24% 0.03 150);
+  --color-deep-ink: oklch(94% 0.01 130);
+  --color-signal: oklch(50% 0.2 28);
+  --color-red: oklch(52% 0.21 28);
+  --color-red-on-dark: oklch(72% 0.17 28);
+  --color-field: oklch(41% 0.13 145);
+  --color-field-deep: oklch(35% 0.11 145);
+  --color-accent-deep: oklch(36% 0.12 145);
+  --color-red-deep: oklch(42% 0.19 28);
+  --tint-accent: oklch(93% 0.04 145);
+  --tint-accent-2: oklch(88% 0.06 145);
+  --tint-accent-3: oklch(83% 0.08 145);
+  --color-accent: oklch(43% 0.13 145);
+  --color-accent-ink: oklch(98% 0.01 140);
+  --color-focus: oklch(43% 0.13 145);
+}
+}
 :root {
   --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
   --text-xs: 0.8125rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.25rem; --text-xl: 1.5625rem; --text-2xl: 1.953rem; --text-3xl: 2.441rem;
@@ -5,13 +66,8 @@
   --text-section: clamp(2rem, 2.5vw + 1rem, 3.5rem); --text-title: clamp(1.25rem, 0.75vw + 0.875rem, 1.625rem); --text-lead: clamp(1.125rem, 0.35vw + 1rem, 1.375rem);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-in: cubic-bezier(0.7, 0, 0.84, 0); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 420ms;
-  --color-error: oklch(52% 0.19 27); --color-success: oklch(50% 0.12 150);
   --container: 1280px; --gutter: 40px; --gap-columns: 32px; --section-gap-s: 64px; --section-gap: 96px; --section-gap-l: 128px;
   --z-base: 1; --z-raised: 10; --z-dropdown: 100; --z-sticky: 200; --z-sticky-nav: 300; --z-modal: 400; --z-toast: 500; --z-tooltip: 600;
-  --color-paper: oklch(97.5% 0.008 120); --color-paper-2: oklch(94% 0.012 125); --color-paper-3: oklch(90% 0.016 125); --color-photo: oklch(99% 0.004 120);
-  --color-ink: oklch(17% 0.01 150); --color-ink-2: oklch(34% 0.012 150); --color-muted: oklch(46% 0.014 150);
-  --color-rule: oklch(84% 0.012 130); --color-deep: oklch(24% 0.03 150); --color-deep-ink: oklch(94% 0.01 130); --color-signal: oklch(50% 0.2 28); --color-red: oklch(52% 0.21 28); --color-red-on-dark: oklch(72% 0.17 28); --color-field: oklch(41% 0.13 145); --color-field-deep: oklch(35% 0.11 145); --color-accent-deep: oklch(36% 0.12 145); --color-red-deep: oklch(42% 0.19 28); --tint-accent: oklch(93% 0.04 145); --tint-accent-2: oklch(88% 0.06 145); --tint-accent-3: oklch(83% 0.08 145);
-  --color-accent: oklch(43% 0.13 145); --color-accent-ink: oklch(98% 0.01 140); --color-focus: oklch(43% 0.13 145);
   --font-display: "Barlow Condensed", "Arial Narrow", sans-serif; --font-body: "Barlow", ui-sans-serif, system-ui, sans-serif; --font-outlier: var(--font-body);
   --radius-card: 4px; --radius-pill: 999px; --rule-hair: 1px; --shadow-card: none;
   --tracking-display: 0em; --display-weight: 800; --radius-control: 4px;

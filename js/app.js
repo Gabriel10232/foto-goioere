@@ -230,7 +230,7 @@
     if (!a.width || !b.width) { bump(); return; }
     var clone = document.createElement('img');
     clone.src = src.currentSrc || src.src; clone.alt = ''; clone.setAttribute('aria-hidden', 'true');
-    clone.style.cssText = 'position:fixed;z-index:700;pointer-events:none;object-fit:contain;border-radius:8px;box-shadow:0 8px 24px oklch(17% 0.01 150 / 35%);background:oklch(99% 0.004 120);left:' + a.left + 'px;top:' + a.top + 'px;width:' + a.width + 'px;height:' + a.height + 'px;';
+    clone.style.cssText = 'position:fixed;z-index:700;pointer-events:none;object-fit:contain;border-radius:8px;box-shadow:0 8px 24px rgba(10,20,12,0.35);background:#fbfcfa;left:' + a.left + 'px;top:' + a.top + 'px;width:' + a.width + 'px;height:' + a.height + 'px;';
     document.body.appendChild(clone);
     var dx = b.left + b.width / 2 - (a.left + a.width / 2), dy = b.top + b.height / 2 - (a.top + a.height / 2);
     var anim = clone.animate([

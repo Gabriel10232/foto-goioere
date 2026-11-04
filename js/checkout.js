@@ -226,5 +226,9 @@
     document.querySelectorAll('[data-edit]').forEach(function (b) { b.addEventListener('click', function () { setStep(Number(b.dataset.edit)); }); });
     $('demoFinish').addEventListener('click', function () { location.href = 'pedido.html?demo=1'; });
   }
+  document.addEventListener('change', function () {
+    document.querySelectorAll('.opt').forEach(function (o) { var i = o.querySelector('input'); if (i) o.classList.toggle('on', i.checked); });
+  });
   init();
+  document.querySelectorAll('.opt').forEach(function (o) { var i = o.querySelector('input'); if (i) o.classList.toggle('on', i.checked); });
 })();
